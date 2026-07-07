@@ -1,0 +1,16 @@
+{
+  "name": "errorscope",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ErrorScope Chrome DevTools extension",
+  "scripts": {
+    "bundle:source-map": "esbuild node_modules/source-map-js/source-map.js --bundle --format=esm --outfile=src/lib/vendor/source-map-bundle.js --platform=browser"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "source-map-js": "^1.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

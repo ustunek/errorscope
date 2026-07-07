@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build vendor bundle
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+*.zip
+*.crx
+*.pem
+scripts/build-store-zip.sh
+store/
+
+# Env / secrets
+.env
+.env.*

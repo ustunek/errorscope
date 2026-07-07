@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check manifest.json
+        run: python3 -c "import json; json.load(open('manifest.json'))"
+
+      - name: Verify required files
+        run: |
+          test -f LICENSE
+          test -f README.md
+          test -f src/background/service-worker.js
+          test -f src/devtools/panel.js
+
+      - name: Ensure icons exist
+        run: |
+          for s in 16 32 48 128; do test -f icons/icon${s}.png; done
