@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ErrorScope</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="brand">
+        <img src="../../icons/icon16.png" alt="" width="16" height="16" />
+        <span>ErrorScope</span>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="all" role="tab" aria-selected="true">
+          All
+        </button>
+        <button class="tab" data-tab="console" role="tab" aria-selected="false">
+          Console
+        </button>
+        <button class="tab" data-tab="network" role="tab" aria-selected="false">
+          Network
+        </button>
+      </nav>
+      <div class="toolbar-actions">
+        <button id="refresh-btn" class="btn btn-ghost" type="button" title="Refresh captured data">
+          Refresh
+        </button>
+        <button id="clear-btn" class="btn btn-ghost" type="button" title="Clear list for active tab">
+          Clear
+        </button>
+        <button id="settings-btn" class="btn btn-ghost" type="button" title="Open settings">
+          Settings
+        </button>
+        <button id="about-btn" class="btn btn-ghost" type="button" title="About ErrorScope">
+          About
+        </button>
+      </div>
+    </header>
+
+    <div id="config-banner" class="banner hidden" role="alert">
+      <span>Configure your AI provider to enable analysis.</span>
+      <button id="open-settings" class="btn btn-primary btn-sm">Open settings</button>
+    </div>
+
+    <main>
+      <section id="all-panel" class="panel-view" data-panel="all">
+        <p class="hint">
+          Console errors, warnings, and network issues in one place. Click
+          <strong>Analyze with AI</strong> on any entry.
+        </p>
+        <ul id="all-list" class="item-list" aria-live="polite"></ul>
+        <p id="all-empty" class="empty">No issues detected yet.</p>
+      </section>
+
+      <section id="console-panel" class="panel-view hidden" data-panel="console">
+        <p class="hint">
+          Errors and warnings from the inspected page appear here. Click
+          <strong>Analyze with AI</strong> on any entry.
+        </p>
+        <p id="console-hint" class="hint banner-warn hidden"></p>
+        <ul id="console-list" class="item-list" aria-live="polite"></ul>
+        <p id="console-empty" class="empty">No console errors or warnings yet.</p>
+      </section>
+
+      <section id="network-panel" class="panel-view hidden" data-panel="network">
+        <p class="hint">
+          Failed and blocked requests from the Network panel are surfaced here.
+        </p>
+        <ul id="network-list" class="item-list" aria-live="polite"></ul>
+        <p id="network-empty" class="empty">No network issues detected yet.</p>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span id="app-version" class="app-version"></span>
+    </footer>
+
+    <div id="about-overlay" class="about-panel hidden" role="dialog" aria-modal="true">
+      <div class="about-card">
+        <h3>About ErrorScope</h3>
+        <p id="panel-about-description"></p>
+        <dl class="about-meta">
+          <dt>Version</dt>
+          <dd id="panel-about-version"></dd>
+          <dt>License</dt>
+          <dd>MIT</dd>
+        </dl>
+        <p>
+          <a id="panel-about-homepage" href="#" target="_blank" rel="noopener noreferrer">ustunek/errorscope</a>
+        </p>
+        <div class="about-actions">
+          <button type="button" id="about-close" class="btn btn-sm">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="analysis-overlay"
+      class="analysis-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="analysis-title"
+    >
+      <div class="analysis-modal" id="analysis-modal">
+        <header class="dialog-header">
+          <h2 id="analysis-title">AI Analysis</h2>
+          <button id="close-dialog" class="btn btn-ghost" aria-label="Close">✕</button>
+        </header>
+
+        <div class="dialog-body">
+          <div id="analysis-status" class="analysis-status hidden" role="status" aria-live="polite">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span id="analysis-status-text" class="analysis-status-text">Analyzing…</span>
+          </div>
+
+          <details id="llm-request-section" class="dialog-panel hidden">
+            <summary class="dialog-panel-header">
+              <span>Sent to LLM</span>
+              <button
+                type="button"
+                class="btn-icon copy-btn"
+                data-copy="llm-payload-content"
+                title="Copy request"
+                aria-label="Copy request"
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+                  />
+                </svg>
+              </button>
+            </summary>
+            <pre id="llm-payload-content" class="dialog-panel-content"></pre>
+          </details>
+
+          <section class="chat-section" aria-label="Analysis and follow-up chat">
+            <p class="chat-section-hint">
+              AI analysis and follow-up chat for this error. History is kept until you leave the page.
+            </p>
+            <div id="chat-messages" class="chat-messages"></div>
+          </section>
+        </div>
+
+        <footer class="dialog-footer">
+          <form id="chat-form" class="chat-form">
+            <input
+              id="chat-input"
+              type="text"
+              placeholder="Follow-up question…"
+              autocomplete="off"
+              disabled
+            />
+            <button type="submit" class="btn btn-primary btn-sm" id="chat-send" disabled>
+              Send
+            </button>
+          </form>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="panel.js"></script>
+  </body>
+</html>
